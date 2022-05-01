@@ -1,5 +1,5 @@
-# cgisf
-Colourless Green Ideas Sleep Furiously generates grammatical but (often) nonsensical sentences. 
+# cgisf_lib
+Colourless Green Ideas Sleep Furiously generates grammatical but (often) nonsensical sentences. Now in lib form!
 
 You can add words to the vocabulary list or help improve my spaghetti code. 
 
