@@ -5,7 +5,7 @@
 //! - [`get_word()`], to generate a word of a certain kind; and
 //! - [`get_structure()`], to get the structure of a sentence.
 //!
-//! cgisf is a reference to 'Colourless Green Ideas Sleep Furiously' - a 1957 example of a sentence that is grammatical but makes no sense.[^note]
+//! cgisf is a reference to 'Colourless Green Ideas Sleep Furiously' - a 1957 example of a sentence that is grammatical but makes no sense.
 //! Similarly, don't expect these sentences to make that much sense either.
 //! # Usage
 //!
@@ -21,7 +21,6 @@
 //! print!("{}", cgisf(2, 1, 1, true, 2, false));
 //! ```
 //! A deeper explanation can be found in the individual functions' pages.
-//! [^note]: `<https://en.wikipedia.org/wiki/Colorless_green_ideas_sleep_furiously>`
 
 mod getstructure;
 mod getword;
