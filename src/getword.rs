@@ -94,10 +94,7 @@ pub fn get_word(firstletter: char) -> String {
         let mut rng = rand::thread_rng();
         let outputnumber = rng.gen_range(1..(count_lines_string(&words[3]) + 1));
         let mut word = get_word_no(outputnumber, &words[3]);
-        if word[word.len() - 2..word.len()] == *"sh"
-            || word.ends_with('x')
-            || word.ends_with('s')
-        {
+        if word[word.len() - 2..word.len()] == *"sh" || word.ends_with('x') || word.ends_with('s') {
             word.push('e');
         }
         // rush -> rushes. Previously, rush -> rushs. Similar for box -> boxes. Toss -> tosses.
@@ -111,7 +108,7 @@ pub fn get_word(firstletter: char) -> String {
                     + ((count_lines_string(&words[5])) as f64)),
         ) {
             let outputnumber = rng.gen_range(1..(count_lines_string(&words[7]) + 1));
-            
+
             get_word_no(outputnumber, &words[7])
         } else {
             let outputnumber = rng.gen_range(1..(count_lines_string(&words[5]) + 1));
@@ -127,11 +124,11 @@ pub fn get_word(firstletter: char) -> String {
                     + ((count_lines_string(&words[5])) as f64)),
         ) {
             let outputnumber = rng.gen_range(1..(count_lines_string(&words[8]) + 1));
-            
+
             get_word_no(outputnumber, &words[8])
         } else {
             let outputnumber = rng.gen_range(1..(count_lines_string(&words[5]) + 1));
-            
+
             get_word_no(outputnumber, &words[5])
         }
     } else {
