@@ -1,10 +1,12 @@
 [package]
-name = "cgisf"
+name = "cgisf_lib"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A quick and easy sentence generator."
 repository = "https://github.com/merelymyself/cgisf_lib"
+readme = "README.md"
+keywords = ["grammar", "sentence", "generator", "english", "language"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -12,7 +14,7 @@ repository = "https://github.com/merelymyself/cgisf_lib"
 rand = "*"
 
 [lib]
-name = "cgisf"
+name = "cgisf_lib"
 crate-type = ["cdylib"]
 doc = true
 path = "src/lib.rs"
