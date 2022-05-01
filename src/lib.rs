@@ -13,7 +13,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! cgisf = "0.1.2"
+//! cgisf = "0.1.3"
 //! ```
 //!
 //! Then,
@@ -44,9 +44,9 @@ fn string_cleanup(str: String) -> String {
 /// - The first argument is used to denote the number of adjectives attached to the subject noun, i.e. Colourless Green
 /// - The second argument is used to denote the number of adverbs attached to the verb, i.e. Furiously
 /// - The third argument is used to denote the sentence structure. There are four structures available, laid out below.
-/// The fourth argument is a boolean, indicating if the subject noun should be plural (true) or not (false).
-/// The fifth argument is a non-negative integer, used to denote the number of adjectives attached to the object noun (if present).
-/// The sixth argument is a boolean, indicating if the object noun should be plural (true) or not (false).
+/// - The fourth argument is a boolean, indicating if the subject noun should be plural (true) or not (false).
+/// - The fifth argument is a non-negative integer, used to denote the number of adjectives attached to the object noun (if present).
+/// - The sixth argument is a boolean, indicating if the object noun should be plural (true) or not (false).
 ///
 /// # Structures
 /// With respect to the integer argument (argument 3):

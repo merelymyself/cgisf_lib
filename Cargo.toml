@@ -1,6 +1,6 @@
 [package]
 name = "cgisf_lib"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A quick and easy sentence generator."
@@ -15,6 +15,6 @@ rand = "0.8.5"
 
 [lib]
 name = "cgisf_lib"
-crate-type = ["cdylib"]
+crate-type = ["lib"]
 doc = true
 path = "src/lib.rs"
