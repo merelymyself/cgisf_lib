@@ -1,0 +1,17 @@
+[package]
+name = "cgisf"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "A quick and easy sentence generator."
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "*"
+
+[lib]
+name = "cgisf"
+crate-type = ["cdylib"]
+doc = true
+path = "src/lib.rs"
