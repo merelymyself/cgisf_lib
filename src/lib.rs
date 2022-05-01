@@ -2,8 +2,8 @@ mod getstructure;
 mod getword;
 use getstructure::get_structure;
 use getword::get_word;
-use rand::Rng;
-use std::env;
+
+
 
 fn string_cleanup(str: String) -> String {
     let mut char_vec: Vec<char> = str.chars().collect();
@@ -12,7 +12,7 @@ fn string_cleanup(str: String) -> String {
     char_vec[(str.len() - 1) as usize] = '.';
     // I never want to touch this cleanup function again.
     char_vec.push(' ');
-    return char_vec.into_iter().collect();
+    char_vec.into_iter().collect()
 }
 
 pub fn cgisf(
@@ -43,5 +43,5 @@ pub fn cgisf(
             final_sentence.push_str(&word);
         }
     }
-    return string_cleanup(final_sentence);
+    string_cleanup(final_sentence)
 }
