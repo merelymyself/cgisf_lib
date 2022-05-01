@@ -127,6 +127,17 @@ fn get_ending_structure4(
     struct_array
 }
 
+/// Gets the structures as laid out in [`cgisf`]. The arguments are the same as well.
+///
+/// What the letters represent can be found in [`get_word`].
+///
+///# Usage
+/// ```
+/// use cgisf::get_structure;
+/// fn main() {
+///     print!("{}", (get_structure(2, 1, 1, true, 2, false)).into_iter().collect());
+/// }
+/// ```
 pub fn get_structure(
     adjectives: i32,
     adverbs: i32,
