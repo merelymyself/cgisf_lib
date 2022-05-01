@@ -13,7 +13,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! cgisf = "0.1.1"
+//! cgisf = "0.1.2"
 //! ```
 //!
 //! Then,
