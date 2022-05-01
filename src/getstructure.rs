@@ -127,9 +127,9 @@ fn get_ending_structure4(
     struct_array
 }
 
-/// Gets the structures as laid out in [`cgisf`]. The arguments are the same as well.
+/// Gets the structures as laid out in [cgisf()](https://docs.rs/cgisf/latest/cgisf/fn.cgisf.html). The arguments are the same as well.
 ///
-/// What the letters represent can be found in [`get_word`].
+/// What the letters represent can be found in [get_word()](https://docs.rs/cgisf/latest/cgisf/fn.get_word.html).
 ///
 ///# Usage
 /// ```
