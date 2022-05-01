@@ -17,12 +17,12 @@ fn get_line_at(path: &Path, line_num: usize) -> Result<String, Error> {
 }
 */
 
-fn count_lines_string(str: &String) -> i32 {
+fn count_lines_string(str: &str) -> i32 {
     let lines = str.lines();
     lines.count() as i32
 }
 
-fn get_word_no(count: i32, str: &String) -> String {
+fn get_word_no(count: i32, str: &str) -> String {
     let mut count2 = count - 1;
     let mut lines = str.lines();
     while count2 != 0 {
@@ -94,7 +94,7 @@ pub fn get_word(firstletter: char) -> String {
         let mut rng = rand::thread_rng();
         let outputnumber = rng.gen_range(1..(count_lines_string(&words[3]) + 1));
         let mut word = get_word_no(outputnumber, &words[3]);
-        if &word[word.len() - 2..word.len()] == &String::from("sh")
+        if word[word.len() - 2..word.len()] == *"sh"
             || word.ends_with('x')
             || word.ends_with('s')
         {
@@ -135,7 +135,7 @@ pub fn get_word(firstletter: char) -> String {
             get_word_no(outputnumber, &words[5])
         }
     } else {
-        for n in 0..10 {
+        for (n, _) in orderforfunction.iter().enumerate() {
             if firstletter == orderforfunction[n] {
                 wordtype = n;
             }
