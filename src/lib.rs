@@ -1,9 +1,17 @@
 mod getstructure;
 mod getword;
-use getstructure::get_structure;
-use getword::get_word;
+pub use getstructure::get_structure;
+pub use getword::get_word;
 
-
+//! A random sentence generator, still without commas.
+//!
+//! Has three functions: 
+//! - cgisf, to generate a sentence; 
+//! - get_word, to generate a word of a certain kind; and 
+//! - get_structure, to get the structure of a sentence.
+//!
+//!
+//!
 
 fn string_cleanup(str: String) -> String {
     let mut char_vec: Vec<char> = str.chars().collect();
