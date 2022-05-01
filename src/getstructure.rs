@@ -133,10 +133,7 @@ fn get_ending_structure4(
 ///
 ///# Usage
 /// ```
-/// use cgisf::get_structure;
-/// fn main() {
-///     print!("{}", (get_structure(2, 1, 1, true, 2, false)).into_iter().collect());
-/// }
+/// print!("{}", (get_structure(2, 1, 1, true, 2, false)).into_iter().collect());
 /// ```
 pub fn get_structure(
     adjectives: i32,

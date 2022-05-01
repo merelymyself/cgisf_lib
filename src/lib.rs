@@ -18,10 +18,7 @@
 //!
 //! Then,
 //! ```
-//! use cgisf::cgisf;
-//! fn main() {
-//!     print!("{}", cgisf(2, 1, 1, true, 2, false));
-//! }
+//! print!("{}", cgisf(2, 1, 1, true, 2, false));
 //! ```
 //! A deeper explanation can be found in the individual functions' pages.
 //! [^note]: `<https://en.wikipedia.org/wiki/Colorless_green_ideas_sleep_furiously>`
@@ -61,10 +58,7 @@ fn string_cleanup(str: String) -> String {
 ///
 /// # Usage
 /// ```
-/// use cgisf::cgisf;
-/// fn main() {
-///     print!("{}", cgisf(2, 1, 1, true, 2, false));
-/// }
+/// print!("{}", cgisf(2, 1, 1, true, 2, false));
 /// ```
 pub fn cgisf(
     adjectives1: i32,

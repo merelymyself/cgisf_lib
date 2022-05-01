@@ -66,10 +66,7 @@ V - verb, except for the singular form - aka 'coders code' vs 'coder codes': thi
 ///
 /// # Usage
 /// ```
-/// use cgisf::get_word;
-/// fn main() {
-///     print!("{}", get_word('a'));
-/// }
+/// print!("{}", get_word('a'));
 /// ```
 pub fn get_word(firstletter: char) -> String {
     let orderforfunction: [char; 10] = ['a', 'A', 'C', 'v', 'M', 'n', 'O', 'p', 's', 'S'];
