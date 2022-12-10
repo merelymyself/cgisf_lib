@@ -13,3 +13,6 @@ stale
 mature
 senior
 grey
+aged
+ancient
+ancestral
