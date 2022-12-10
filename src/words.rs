@@ -1,5 +1,4 @@
 use const_format::{str_replace, str_split};
-use once_cell::sync::Lazy;
 use rand::Rng;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -93,7 +92,7 @@ struct Words {
         [&'static str; str_split!(include_str!("../wordlists/transitive_verbs.txt"), '\n').len()],
 }
 
-static WORDS: Lazy<Words> = Lazy::new(|| Words {
+static WORDS: Words = Words {
     adverbs: str_split!(
         str_replace!(include_str!("../wordlists/adverbs.txt"), '\r', ""),
         '\n'
@@ -146,7 +145,7 @@ static WORDS: Lazy<Words> = Lazy::new(|| Words {
         str_replace!(include_str!("../wordlists/transitive_verbs.txt"), '\r', ""),
         '\n'
     ),
-});
+};
 
 #[inline]
 pub fn gen_word(wordtype: WordType) -> String {
