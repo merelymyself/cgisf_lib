@@ -2,7 +2,6 @@ use cgisf_lib::*;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    // let input = fs::read_to_string("test_inputs").unwrap();
     // let (i_long, i_realistic) = input
     //     .split_once('\n')
     //     .expect("test_inputs should contain two lines, a long and realistic sentence.");
