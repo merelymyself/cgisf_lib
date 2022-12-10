@@ -148,23 +148,6 @@ static WORDS: Lazy<Words> = Lazy::new(|| Words {
     ),
 });
 
-/*
-The full linkage of characters and what they represent:
-n - nouns (general), made plural by adding an 's' at the end.
-s - nouns (singular), only exist in singular form
-p - nouns (plural), only exist in plural form
-O - opinion adjective
-S - size adjective
-A - age adjective
-C - colour adjective
-M - material adjective
-t - transitive verbs, aka noun verb noun.
-v - verbs, aka noun verb.
-a - adverbs
-0 - 'the', couldn't think of any other way to implement it.
-V - verb, except for the singular form - aka 'coders code' vs 'coder codes': this is the latter
- */
-
 #[inline]
 pub fn gen_word(wordtype: WordType) -> String {
     use WordType::*;
