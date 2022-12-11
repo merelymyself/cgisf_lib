@@ -47,6 +47,7 @@ pub enum Structure {
     AdjectivesNounVerbAdverbsNounAdjectives, //i.e.Colourless Green Ideas Furiously Hit Red Sheep
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SentenceConfig {
     adjectives: u16,      // The number of adjectives attached to the noun
     adverbs: u16,         // The number of adverbs attached to the verb
@@ -89,8 +90,7 @@ impl SentenceConfigBuilder {
             on_plural: rng.gen_range(0..=1) == 1,
         }
     }
-    pub fn defaults(self) -> Self {
-        let _ = self;
+    pub fn defaults() -> Self {
         SentenceConfigBuilder::default()
     }
     pub fn adjectives(mut self, n: u16) -> Self {
