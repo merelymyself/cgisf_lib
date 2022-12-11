@@ -1,5 +1,5 @@
 [package]
-name = "cgisf_lib"
+name = "sentence_generator"
 version = "0.1.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -18,7 +18,7 @@ rand = "0.8.5"
 const_format = {version = "0.2", features = ["rust_1_64"]}
 
 [lib]
-name = "cgisf_lib"
+name = "sentence_generator"
 crate-type = ["lib"]
 doc = true
 path = "src/lib.rs"

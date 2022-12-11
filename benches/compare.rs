@@ -1,5 +1,5 @@
-use cgisf_lib::*;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use sentence_generator::*;
 
 pub fn criterion_benchmark(c: &mut Criterion) {
     // let (i_long, i_realistic) = input

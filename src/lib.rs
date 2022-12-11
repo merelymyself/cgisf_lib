@@ -36,7 +36,6 @@ fn string_cleanup(mut str: String) -> String {
         let me = unsafe { x.as_bytes_mut() };
         me[0] = b'.'
     });
-    // str.push(' ');
     str
 }
 
@@ -155,7 +154,8 @@ pub fn gen_sentence(config: SentenceConfig) -> String {
     let tokens = gen_structure(config);
     let mut sentence = String::with_capacity((tokens.len() + 1) * 5);
     for token in tokens {
-        sentence.push_str(&(gen_word(token) + " "));
+        sentence.push_str(&gen_word(token));
+        sentence.push(' ');
     }
     sentence = string_cleanup(sentence);
     sentence

@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use const_format::{str_replace, str_split};
 use rand::Rng;
 
@@ -148,7 +150,7 @@ static WORDS: Words = Words {
 };
 
 #[inline]
-pub fn gen_word(wordtype: WordType) -> String {
+pub fn gen_word(wordtype: WordType) -> Cow<'static, str> {
     use WordType::*;
     let mut rng = rand::thread_rng();
     let wordlist = match wordtype {
@@ -159,7 +161,7 @@ pub fn gen_word(wordtype: WordType) -> String {
                     .get_unchecked(rng.gen_range(0..WORDS.verbs.len()))
                     .to_string()
             };
-            return pluralize(word);
+            return Cow::Owned(pluralize(word));
         }
         PluralNoun => {
             let (plural_len, singular_len) = (WORDS.plural_nouns.len(), WORDS.singular_nouns.len());
@@ -171,35 +173,33 @@ pub fn gen_word(wordtype: WordType) -> String {
                         .get_unchecked(pos % plural_len)
                         .to_string()
                 };
-                return pluralize(word);
+                return Cow::Owned(pluralize(word));
             }
-            WORDS.plural_nouns.as_slice()
+            WORDS.plural_nouns.as_ref()
         }
         SingularNoun => {
             let (singular_len, general_len) = (WORDS.plural_nouns.len(), WORDS.nouns.len());
             let pos = rng.gen_range(0..singular_len + general_len - 1);
             if pos >= singular_len {
-                WORDS.singular_nouns.as_slice()
+                WORDS.singular_nouns.as_ref()
             } else {
-                WORDS.nouns.as_slice()
+                WORDS.nouns.as_ref()
             }
         }
-        Verb => WORDS.verbs.as_slice(),
-        Adverb => WORDS.adverbs.as_slice(),
-        GeneralNoun => WORDS.nouns.as_slice(),
-        OpinionAdjective => WORDS.opinion_adjectives.as_slice(),
-        SizeAdjective => WORDS.size_adjectives.as_slice(),
-        AgeAdjective => WORDS.age_adjectives.as_slice(),
-        ColorAdjective => WORDS.color_adjectives.as_slice(),
-        MaterialAdjective => WORDS.material_adjectives.as_slice(),
-        TransitiveVerb => WORDS.transitive_verbs.as_slice(),
-        The => return "the".to_string(),
+        Verb => WORDS.verbs.as_ref(),
+        Adverb => WORDS.adverbs.as_ref(),
+        GeneralNoun => WORDS.nouns.as_ref(),
+        OpinionAdjective => WORDS.opinion_adjectives.as_ref(),
+        SizeAdjective => WORDS.size_adjectives.as_ref(),
+        AgeAdjective => WORDS.age_adjectives.as_ref(),
+        ColorAdjective => WORDS.color_adjectives.as_ref(),
+        MaterialAdjective => WORDS.material_adjectives.as_ref(),
+        TransitiveVerb => WORDS.transitive_verbs.as_ref(),
+        The => return Cow::Borrowed("the"),
     };
     unsafe {
-        wordlist
-            .get_unchecked(rng.gen_range(0..wordlist.len())) // using unchecked as we cannot
-            // ever try to get an index out of bounds
-            .to_string()
+        Cow::Borrowed(wordlist.get_unchecked(rng.gen_range(0..wordlist.len()))) // using unchecked as we cannot
+                                                                                // ever try to get an index out of bounds
     }
 }
 
