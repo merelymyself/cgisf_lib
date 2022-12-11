@@ -4133,7 +4133,6 @@ ransack
 ransom
 rant
 rap
-rape
 rappel
 rasp
 rasterise
@@ -4461,7 +4460,6 @@ retail
 retain
 retake
 retaliate
-retard
 retch
 retell
 retest
