@@ -13,3 +13,5 @@ Similarly, don't expect these sentences to make that much sense either.
 The documentation is significantly better than this silly README file.
 
 Contributions welcome at [https://github.com/merelymyself/cgisf_lib](https://github.com/merelymyself/cgisf_lib).
+
+A massive amount of credit goes to [CordlessCoder](https://github.com/CordlessCoder), who single-handedly rewrote practically everything for the 0.2.0 release.
