@@ -1,9 +1,9 @@
 //! A random sentence generator, still without commas.
 //!
 //! Has three functions:
-//! - [`cgisf()`], to generate a sentence;
-//! - [`get_word()`], to generate a word of a certain kind; and
-//! - [`get_structure()`], to get the structure of a sentence.
+//! - [`gen_sentence()`], to generate a sentence;
+//! - [`gen_word()`], to generate a word of a certain kind; and
+//! - [`gen_structure()`], to generate the structure of a sentence based on your SentenceConfig.
 //!
 //! cgisf is a reference to 'Colourless Green Ideas Sleep Furiously' - a 1957 example of a sentence that is grammatical but makes no sense.
 //! Similarly, don't expect these sentences to make that much sense either.
@@ -18,72 +18,223 @@
 //!
 //! Then,
 //! ```
-//! print!("{}", cgisf(2, 1, 1, true, 2, false));
+//! print!("{}", gen_sentence(SentenceConfigBuilder::random().build()));
 //! ```
 //! A deeper explanation can be found in the individual functions' pages.
 
-mod getstructure;
-mod getword;
-pub use getstructure::get_structure;
-pub use getword::get_word;
+mod words;
+use rand::Rng;
+pub use words::{gen_word, WordType};
 
-fn string_cleanup(str: String) -> String {
-    let mut char_vec: Vec<char> = str.chars().collect();
-    char_vec[0] = char_vec[0].to_ascii_uppercase();
-    // It's absolutely ridiculous how much work it takes to convert the first letter of a String to uppercase in Rust.
-    char_vec[(str.len() - 1) as usize] = '.';
-    // I never want to touch this cleanup function again.
-    char_vec.push(' ');
-    char_vec.into_iter().collect()
+fn string_cleanup(mut str: String) -> String {
+    str.get_mut(0..1).map(|c| {
+        let me = unsafe { c.as_bytes_mut() };
+        me[0].make_ascii_uppercase()
+    });
+    let len = str.len().max(1);
+    str.get_mut(len - 1..len).map(|x| {
+        let me = unsafe { x.as_bytes_mut() };
+        me[0] = b'.'
+    });
+    str
 }
 
-/// Takes in 6 arguments, spits out a random sentence.
-///
-/// # Arguments
-/// The first three arguments are non-negative integers. Respectively:
-/// - The first argument is used to denote the number of adjectives attached to the subject noun, i.e. Colourless Green
-/// - The second argument is used to denote the number of adverbs attached to the verb, i.e. Furiously
-/// - The third argument is used to denote the sentence structure. There are four structures available, laid out below.
-/// - The fourth argument is a boolean, indicating if the subject noun should be plural (true) or not (false).
-/// - The fifth argument is a non-negative integer, used to denote the number of adjectives attached to the object noun (if present).
-/// - The sixth argument is a boolean, indicating if the object noun should be plural (true) or not (false).
-///
-/// # Structures
-/// With respect to the integer argument (argument 3):
-/// * 1: Colourless Green Ideas Sleep Furiously. (Adjectives-Noun-Verb-Adverbs)
-/// * 2: Colourless Green Ideas Furiously Sleep. (Adjectives-Noun-Adverbs-Verb)
-/// * 3: Colourless Green Ideas Hit Furiously Red Sheep. (Adjectives-Noun-Verb-Adverbs-Adjectives-Noun) -> Has object noun.
-/// * 4: Colourless Green Ideas Furiously Hit Red Sheep. (Adjectives-Noun-Verb-Adverbs-Noun-Adjectives) -> Has object noun.
-///
-/// # Usage
-/// ```
-/// print!("{}", cgisf(2, 1, 1, true, 2, false));
-/// ```
-pub fn cgisf(
-    adjectives1: i32,
-    adverbs: i32,
-    structure: i32,
-    plural1: bool,
-    adjectives2: i32,
-    plural2: bool,
-) -> String {
-    let y = get_structure(
-        adjectives1,
-        adverbs,
-        structure,
-        plural1,
-        adjectives2,
-        plural2,
-    );
-    let mut final_sentence = String::new();
-    for letter in y {
-        if letter == 'x' {
-            break;
-        } else {
-            let mut word = get_word(letter);
-            word.push(' ');
-            final_sentence.push_str(&word);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Structure {
+    AdjectivesNounVerbAdverbs, //i.e. Colourless Green Ideas Sleep Furiously.
+    AdjectivesNounAdverbsVerb, //i.e. Colourless Green Ideas Furiously Sleep.
+    AdjectivesNounVerbAdverbsAdjectivesNoun, //i.e. Colourless Green Ideas Hit Furiously Red Sheep.
+    AdjectivesNounVerbAdverbsNounAdjectives, //i.e.Colourless Green Ideas Furiously Hit Red Sheep
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SentenceConfig {
+    adjectives: u16,      // The number of adjectives attached to the noun
+    adverbs: u16,         // The number of adverbs attached to the verb
+    structure: Structure, // The the sentence structure. There are four options.
+    plural: bool,         // Whether the noun should be plural
+    on_adjectives: u16,   // The number of adjectives attached to the object noun(if present).
+    on_plural: bool,      // Whether the object noun should be plural
+}
+
+pub struct SentenceConfigBuilder {
+    adjectives: u16,      // The number of adjectives attached to the noun
+    adverbs: u16,         // The number of adverbs attached to the verb
+    structure: Structure, // The the sentence structure. There are four options.
+    plural: bool,         // Whether the noun should be plural
+    on_adjectives: u16,   // The number of adjectives attached to the object noun(if present).
+    on_plural: bool,      // Whether the object noun should be plural
+}
+
+impl SentenceConfigBuilder {
+    pub fn new() -> Self {
+        SentenceConfigBuilder::default()
+    }
+    pub fn random() -> Self {
+        use Structure::*;
+        let mut rng = rand::thread_rng();
+        SentenceConfigBuilder {
+            adjectives: rng.gen_range(1..=3),
+            adverbs: rng.gen_range(0..=2),
+            structure: {
+                let options = [
+                    AdjectivesNounVerbAdverbs,
+                    AdjectivesNounAdverbsVerb,
+                    AdjectivesNounVerbAdverbsAdjectivesNoun,
+                    AdjectivesNounVerbAdverbsNounAdjectives,
+                ];
+                options[rng.gen_range(0..options.len())]
+            },
+            plural: rng.gen_range(0..=1) == 1,
+            on_adjectives: rng.gen_range(1..=3),
+            on_plural: rng.gen_range(0..=1) == 1,
         }
     }
-    string_cleanup(final_sentence)
+    pub fn defaults() -> Self {
+        SentenceConfigBuilder::default()
+    }
+    pub fn adjectives(mut self, n: u16) -> Self {
+        self.adjectives = n;
+        self
+    }
+    pub fn adverbs(mut self, n: u16) -> Self {
+        self.adverbs = n;
+        self
+    }
+    pub fn structure(mut self, n: Structure) -> Self {
+        self.structure = n;
+        self
+    }
+    pub fn plural(mut self, n: bool) -> Self {
+        self.plural = n;
+        self
+    }
+    pub fn on_adjectives(mut self, n: u16) -> Self {
+        self.on_adjectives = n;
+        self
+    }
+    pub fn on_plural(mut self, n: bool) -> Self {
+        self.on_plural = n;
+        self
+    }
+    pub fn build(self) -> SentenceConfig {
+        let Self {
+            adjectives,
+            adverbs,
+            structure,
+            plural,
+            on_adjectives,
+            on_plural,
+        } = self;
+        SentenceConfig {
+            adjectives,
+            adverbs,
+            structure,
+            plural,
+            on_adjectives,
+            on_plural,
+        }
+    }
+}
+
+impl Default for SentenceConfigBuilder {
+    fn default() -> Self {
+        SentenceConfigBuilder {
+            adjectives: 2,
+            adverbs: 1,
+            structure: Structure::AdjectivesNounVerbAdverbs,
+            plural: true,
+            on_adjectives: 2,
+            on_plural: false,
+        }
+    }
+}
+
+pub fn gen_sentence(config: SentenceConfig) -> String {
+    let tokens = gen_structure(config);
+    let mut sentence = String::with_capacity((tokens.len() + 1) * 5);
+    for token in tokens {
+        sentence.push_str(&gen_word(token));
+        sentence.push(' ');
+    }
+    sentence = string_cleanup(sentence);
+    sentence
+}
+
+pub fn gen_structure(config: SentenceConfig) -> Vec<WordType> {
+    use Structure::*;
+    let words = (config.adverbs + config.adjectives + config.on_adjectives) as usize + 3;
+    let mut tokens: Vec<WordType> = Vec::with_capacity(words);
+    if !config.plural || rand::thread_rng().gen_range(0..=1) == 1 {
+        tokens.push(WordType::The)
+    }
+    tokens.append(&mut WordType::adjective_mul(config.adjectives));
+    // Adding adjectives before the noun
+    tokens.push(if config.plural {
+        WordType::PluralNoun
+    } else {
+        WordType::SingularNoun
+    });
+    // The noun itself
+    match config.structure {
+        AdjectivesNounVerbAdverbs => {
+            tokens.push(if config.plural {
+                WordType::Verb
+            } else {
+                WordType::NoSingularVerb
+            }); // Adding the verb
+            for _ in 0..config.adverbs {
+                tokens.push(WordType::Adverb)
+            } // Adding the adverbs
+        }
+        AdjectivesNounAdverbsVerb => {
+            for _ in 0..config.adverbs {
+                tokens.push(WordType::Adverb)
+            } // Adding the adverbs
+            tokens.push(if config.plural {
+                WordType::Verb
+            } else {
+                WordType::NoSingularVerb
+            }); // Adding the verb
+        }
+        AdjectivesNounVerbAdverbsAdjectivesNoun => {
+            tokens.push(if config.plural {
+                WordType::Verb
+            } else {
+                WordType::NoSingularVerb
+            }); // Adding the verb
+            for _ in 0..config.adverbs {
+                tokens.push(WordType::Adverb)
+            } // Adding the adverbs
+            if !config.on_plural || rand::thread_rng().gen_range(0..=1) == 1 {
+                tokens.push(WordType::The)
+            }
+            tokens.append(&mut WordType::adjective_mul(config.on_adjectives));
+            tokens.push(if config.plural {
+                WordType::PluralNoun
+            } else {
+                WordType::SingularNoun
+            });
+        }
+        AdjectivesNounVerbAdverbsNounAdjectives => {
+            for _ in 0..config.adverbs {
+                tokens.push(WordType::Adverb)
+            } // Adding the adverbs
+            tokens.push(if config.plural {
+                WordType::Verb
+            } else {
+                WordType::NoSingularVerb
+            }); // Adding the verb
+            if !config.on_plural || rand::thread_rng().gen_range(0..=1) == 1 {
+                tokens.push(WordType::The)
+            }
+            tokens.append(&mut WordType::adjective_mul(config.on_adjectives));
+            tokens.push(if config.plural {
+                WordType::PluralNoun
+            } else {
+                WordType::SingularNoun
+            });
+        }
+    };
+    tokens
 }
