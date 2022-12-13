@@ -13,11 +13,12 @@
 //!
 //! ```toml
 //! [dependencies]
-//! cgisf = "0.1.3"
+//! cgisf = "0.2.0"
 //! ```
 //!
 //! Then,
 //! ```
+//! use cgisf_lib::{gen_sentence, SentenceConfigBuilder};
 //! print!("{}", gen_sentence(SentenceConfigBuilder::random().build()));
 //! ```
 //! A deeper explanation can be found in the individual functions' pages.
@@ -26,17 +27,17 @@ mod words;
 use rand::Rng;
 pub use words::{gen_word, WordType};
 
-fn string_cleanup(mut str: String) -> String {
-    str.get_mut(0..1).map(|c| {
+fn string_cleanup(mut s: String) -> String {
+    if let Some(c) = s.get_mut(0..1) {
         let me = unsafe { c.as_bytes_mut() };
         me[0].make_ascii_uppercase()
-    });
-    let len = str.len().max(1);
-    str.get_mut(len - 1..len).map(|x| {
+    };
+    let len = s.len().max(1);
+    if let Some(x) = s.get_mut(len - 1..len) {
         let me = unsafe { x.as_bytes_mut() };
         me[0] = b'.'
-    });
-    str
+    };
+    s
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -51,7 +52,7 @@ pub enum Structure {
 pub struct SentenceConfig {
     adjectives: u16,      // The number of adjectives attached to the noun
     adverbs: u16,         // The number of adverbs attached to the verb
-    structure: Structure, // The the sentence structure. There are four options.
+    structure: Structure, // The sentence structure. There are four options.
     plural: bool,         // Whether the noun should be plural
     on_adjectives: u16,   // The number of adjectives attached to the object noun(if present).
     on_plural: bool,      // Whether the object noun should be plural
@@ -60,7 +61,7 @@ pub struct SentenceConfig {
 pub struct SentenceConfigBuilder {
     adjectives: u16,      // The number of adjectives attached to the noun
     adverbs: u16,         // The number of adverbs attached to the verb
-    structure: Structure, // The the sentence structure. There are four options.
+    structure: Structure, // The sentence structure. There are four options.
     plural: bool,         // Whether the noun should be plural
     on_adjectives: u16,   // The number of adjectives attached to the object noun(if present).
     on_plural: bool,      // Whether the object noun should be plural
@@ -89,9 +90,6 @@ impl SentenceConfigBuilder {
             on_adjectives: rng.gen_range(1..=3),
             on_plural: rng.gen_range(0..=1) == 1,
         }
-    }
-    pub fn defaults() -> Self {
-        SentenceConfigBuilder::default()
     }
     pub fn adjectives(mut self, n: u16) -> Self {
         self.adjectives = n;
@@ -237,4 +235,17 @@ pub fn gen_structure(config: SentenceConfig) -> Vec<WordType> {
         }
     };
     tokens
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn show_result() {
+        let sc = SentenceConfigBuilder::default().build();
+        let sentence = gen_sentence(sc);
+        assert!(sentence.chars().next().unwrap().is_uppercase());
+        assert_eq!(sentence.chars().last().unwrap(), '.');
+        println!("{}", sentence);
+    }
 }
