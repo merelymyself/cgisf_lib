@@ -13,7 +13,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! cgisf = "0.2.0"
+//! cgisf = "0.2.1"
 //! ```
 //!
 //! Then,
@@ -40,14 +40,20 @@ fn string_cleanup(mut s: String) -> String {
     s
 }
 
+/// The structure of the sentence is one of these four options.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum Structure {
-    AdjectivesNounVerbAdverbs, //i.e. Colourless Green Ideas Sleep Furiously.
-    AdjectivesNounAdverbsVerb, //i.e. Colourless Green Ideas Furiously Sleep.
-    AdjectivesNounVerbAdverbsAdjectivesNoun, //i.e. Colourless Green Ideas Hit Furiously Red Sheep.
-    AdjectivesNounVerbAdverbsNounAdjectives, //i.e.Colourless Green Ideas Furiously Hit Red Sheep
+pub enum Structure { 
+    /// A sentence like: "Colourless Green Ideas Sleep Furiously".
+    AdjectivesNounVerbAdverbs,    
+    /// A sentence like: "Colourless Green Ideas Furiously Sleep".
+    AdjectivesNounAdverbsVerb, 
+    /// A sentence like: "Colourless Green Ideas Hit Furiously Red Sheep".
+    AdjectivesNounVerbAdverbsAdjectivesNoun, 
+    /// A sentence like: "Colourless Green Ideas Furiously Hit Red Sheep".
+    AdjectivesNounVerbAdverbsNounAdjectives,
 }
 
+/// The actual structure of the config. To build it, use [`SentenceConfigBuilder`].
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SentenceConfig {
     adjectives: u16,      // The number of adjectives attached to the noun
@@ -58,6 +64,19 @@ pub struct SentenceConfig {
     on_plural: bool,      // Whether the object noun should be plural
 }
 
+/// The builder for [`SentenceConfig`]. 
+///
+/// By default, the config creates a sentence with two adjectives, one adverb, and plural nouns
+/// following the "AdjectivesNounVerbAdverbs" [`Structure`].
+///
+/// # Example
+/// ```
+/// let config = SentenceConfigBuilder::new()
+///     .adjectives(3)
+///     .adverbs(2)
+///     .plural(false)
+///     .build();
+/// ```
 pub struct SentenceConfigBuilder {
     adjectives: u16,      // The number of adjectives attached to the noun
     adverbs: u16,         // The number of adverbs attached to the verb
@@ -107,10 +126,16 @@ impl SentenceConfigBuilder {
         self.plural = n;
         self
     }
+    /// The number of adjectives attached to the object noun. This only has an effect if the
+    /// [`Structure`] is "AdjectivesNounVerbAdverbsNounAdjectives" or
+    /// "AdjectivesNounVerbAdverbsAdjectivesNoun"
     pub fn on_adjectives(mut self, n: u16) -> Self {
         self.on_adjectives = n;
         self
     }
+    /// Whether the object noun is plural or not. This only has an effect if the
+    /// [`Structure`] is "AdjectivesNounVerbAdverbsNounAdjectives" or
+    /// "AdjectivesNounVerbAdverbsAdjectivesNoun"
     pub fn on_plural(mut self, n: bool) -> Self {
         self.on_plural = n;
         self

@@ -3,6 +3,7 @@ use std::borrow::Cow;
 use const_format::{str_replace, str_split};
 use rand::Rng;
 
+/// The type of word. 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum WordType {
     GeneralNoun,
@@ -149,6 +150,8 @@ static WORDS: Words = Words {
     ),
 };
 
+/// Get a random word from the wordlists that fits the [`WordType`]. In this step, the word 
+/// may be altered slightly, such as when a 's' is added to the end of a noun to get a plural noun.
 #[inline]
 pub fn gen_word(wordtype: WordType) -> Cow<'static, str> {
     use WordType::*;
