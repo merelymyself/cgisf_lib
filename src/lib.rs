@@ -42,13 +42,13 @@ fn string_cleanup(mut s: String) -> String {
 
 /// The structure of the sentence is one of these four options.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum Structure { 
+pub enum Structure {
     /// A sentence like: "Colourless Green Ideas Sleep Furiously".
-    AdjectivesNounVerbAdverbs,    
+    AdjectivesNounVerbAdverbs,
     /// A sentence like: "Colourless Green Ideas Furiously Sleep".
-    AdjectivesNounAdverbsVerb, 
+    AdjectivesNounAdverbsVerb,
     /// A sentence like: "Colourless Green Ideas Hit Furiously Red Sheep".
-    AdjectivesNounVerbAdverbsAdjectivesNoun, 
+    AdjectivesNounVerbAdverbsAdjectivesNoun,
     /// A sentence like: "Colourless Green Ideas Furiously Hit Red Sheep".
     AdjectivesNounVerbAdverbsNounAdjectives,
 }
@@ -56,21 +56,23 @@ pub enum Structure {
 /// The actual structure of the config. To build it, use [`SentenceConfigBuilder`].
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SentenceConfig {
-    adjectives: u16,      // The number of adjectives attached to the noun
-    adverbs: u16,         // The number of adverbs attached to the verb
-    structure: Structure, // The sentence structure. There are four options.
-    plural: bool,         // Whether the noun should be plural
-    on_adjectives: u16,   // The number of adjectives attached to the object noun(if present).
-    on_plural: bool,      // Whether the object noun should be plural
+    adjectives: u16,       // The number of adjectives attached to the noun
+    adverbs: u16,          // The number of adverbs attached to the verb
+    structure: Structure,  // The sentence structure. There are four options.
+    plural: bool,          // Whether the noun should be plural
+    count_adjectives: u16, // The number of adjectives attached to the object noun(if present).
+    on_plural: bool,       // Whether the object noun should be plural
 }
 
-/// The builder for [`SentenceConfig`]. 
+/// The builder for [`SentenceConfig`].
 ///
 /// By default, the config creates a sentence with two adjectives, one adverb, and plural nouns
 /// following the "AdjectivesNounVerbAdverbs" [`Structure`].
 ///
 /// # Example
 /// ```
+/// use cgisf_lib::SentenceConfigBuilder;
+///
 /// let config = SentenceConfigBuilder::new()
 ///     .adjectives(3)
 ///     .adverbs(2)
@@ -154,7 +156,7 @@ impl SentenceConfigBuilder {
             adverbs,
             structure,
             plural,
-            on_adjectives,
+            count_adjectives: on_adjectives,
             on_plural,
         }
     }
@@ -186,12 +188,12 @@ pub fn gen_sentence(config: SentenceConfig) -> String {
 
 pub fn gen_structure(config: SentenceConfig) -> Vec<WordType> {
     use Structure::*;
-    let words = (config.adverbs + config.adjectives + config.on_adjectives) as usize + 3;
+    let words = (config.adverbs + config.adjectives + config.count_adjectives) as usize + 3;
     let mut tokens: Vec<WordType> = Vec::with_capacity(words);
     if !config.plural || rand::thread_rng().gen_range(0..=1) == 1 {
         tokens.push(WordType::The)
     }
-    tokens.append(&mut WordType::adjective_mul(config.adjectives));
+    WordType::adjective_mul(&mut tokens, config.adjectives);
     // Adding adjectives before the noun
     tokens.push(if config.plural {
         WordType::PluralNoun
@@ -232,7 +234,7 @@ pub fn gen_structure(config: SentenceConfig) -> Vec<WordType> {
             if !config.on_plural || rand::thread_rng().gen_range(0..=1) == 1 {
                 tokens.push(WordType::The)
             }
-            tokens.append(&mut WordType::adjective_mul(config.on_adjectives));
+            WordType::adjective_mul(&mut tokens, config.adjectives);
             tokens.push(if config.plural {
                 WordType::PluralNoun
             } else {
@@ -251,7 +253,7 @@ pub fn gen_structure(config: SentenceConfig) -> Vec<WordType> {
             if !config.on_plural || rand::thread_rng().gen_range(0..=1) == 1 {
                 tokens.push(WordType::The)
             }
-            tokens.append(&mut WordType::adjective_mul(config.on_adjectives));
+            WordType::adjective_mul(&mut tokens, config.count_adjectives);
             tokens.push(if config.plural {
                 WordType::PluralNoun
             } else {
