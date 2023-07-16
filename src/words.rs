@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use const_format::{str_replace, str_split};
 use rand::Rng;
 
-/// The type of word. 
+/// The type of word.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum WordType {
     GeneralNoun,
@@ -24,8 +24,7 @@ pub enum WordType {
 impl WordType {
     pub fn any() -> Self {
         use WordType::*;
-        let mut rng = rand::thread_rng();
-        let possible = [
+        const POSSIBLE: [WordType; 12] = [
             GeneralNoun,
             SingularNoun,
             PluralNoun,
@@ -39,37 +38,38 @@ impl WordType {
             Verb,
             Adverb,
         ];
-        possible[rng.gen_range(0..possible.len())]
+        let mut rng = rand::thread_rng();
+        POSSIBLE[rng.gen_range(0..POSSIBLE.len())]
     }
     pub fn any_adjective() -> Self {
         use WordType::*;
-        let mut rng = rand::thread_rng();
-        let possible = [
+        const OPTIONS: [WordType; 5] = [
             OpinionAdjective,
             ColorAdjective,
             SizeAdjective,
             AgeAdjective,
             MaterialAdjective,
         ];
-        possible[rng.gen_range(0..possible.len())]
+        let mut rng = rand::thread_rng();
+        OPTIONS[rng.gen_range(0..OPTIONS.len())]
     }
-    pub fn adjective_mul(n: u16) -> Vec<Self> {
+    pub fn adjective_mul(vec: &mut Vec<Self>, n: u16) {
         use WordType::*;
-        let mut rng = rand::thread_rng();
-        let mut adjectives: Vec<WordType> = Vec::with_capacity(n as usize);
-        let order = [
+        const ORDER: [WordType; 5] = [
             OpinionAdjective,
             ColorAdjective,
             SizeAdjective,
             AgeAdjective,
             MaterialAdjective,
         ];
-        let len = order.len();
+        let mut rng = rand::thread_rng();
+        let len = ORDER.len();
+        let start = vec.len();
         for _ in 0..n {
-            adjectives.push(order[rng.gen_range(0..len)]);
+            vec.push(ORDER[rng.gen_range(0..len)]);
         }
-        adjectives.sort_by_key(|x| order.iter().position(|c| c == x));
-        adjectives
+        let adjectives = &mut vec[start..];
+        adjectives.sort_by_key(|x| ORDER.iter().position(|c| c == x));
     }
 }
 
@@ -150,7 +150,7 @@ static WORDS: Words = Words {
     ),
 };
 
-/// Get a random word from the wordlists that fits the [`WordType`]. In this step, the word 
+/// Get a random word from the wordlists that fits the [`WordType`]. In this step, the word
 /// may be altered slightly, such as when a 's' is added to the end of a noun to get a plural noun.
 #[inline]
 pub fn gen_word(wordtype: WordType) -> Cow<'static, str> {

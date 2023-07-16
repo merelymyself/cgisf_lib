@@ -14,8 +14,8 @@ keywords = ["grammar", "sentence", "generator", "english", "language"]
 opt-level = 3
 
 [dependencies]
+const_format = { version = "0.2.31", features = ["rust_1_64"] }
 rand = "0.8.5"
-const_format = {version = "0.2", features = ["rust_1_64"]}
 
 [lib]
 name = "cgisf_lib"
@@ -24,7 +24,7 @@ doc = true
 path = "src/lib.rs"
 
 [dev-dependencies]
-criterion = "0.4"
+criterion = "0.5"
 
 [[bench]]
 name = "compare"
